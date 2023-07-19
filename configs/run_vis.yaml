@@ -1,0 +1,17 @@
+defaults:
+  - user: default
+  - machine: local
+  - callback: base 
+  - data: bop
+  - _self_
+
+# define templates
+level: 0
+distribution: all
+
+# dataset and scores to visualize
+root_dir: ${machine.root_dir}/datasets/
+dataset_name:
+input_file:
+output_dir:
+conf_threshold: 0.5

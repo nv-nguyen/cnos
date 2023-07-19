@@ -1,0 +1,7 @@
+_target_:  pytorch_lightning.loggers.WandbLogger
+
+# Define logger
+project: ${user.wandb_project_name}
+save_dir: ${save_dir}/
+offline: ${machine.dryrun}
+name: ${name_exp}

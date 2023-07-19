@@ -1,0 +1,4 @@
+wandb_api_key: 
+wandb_project_name: cnos
+local_root_dir: ./datasets/bop23_challenge
+slurm_root_dir: ./datasets/bop23_challenge

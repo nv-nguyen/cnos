@@ -1,0 +1,10 @@
+  _target_: src.model.dinov2.CustomDINOv2
+  model_name: dinov2_vitl14
+  model: 
+    _target_: torch.hub.load
+    repo_or_dir: facebookresearch/dinov2
+    model: ${model.descriptor_model.model_name}
+  token_name: x_norm_clstoken
+  descriptor_width_size: ${model.descriptor_width_size}
+  image_size: 224
+  chunk_size: 16

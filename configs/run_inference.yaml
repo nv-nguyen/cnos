@@ -1,0 +1,11 @@
+defaults:
+  - user: default
+  - machine: local
+  - callback: base 
+  - data: bop
+  - model: cnos
+  - _self_
+
+save_dir: ${machine.root_dir}/results/${name_exp}
+name_exp: cnos_exps
+dataset_name:
