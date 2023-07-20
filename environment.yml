@@ -31,4 +31,5 @@ dependencies:
     - ruamel.yaml
     - pyrender
     - wandb
+    - distinctipy
 # bop https://github.com/thodan/bop_toolkit.git
