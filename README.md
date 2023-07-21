@@ -32,7 +32,7 @@ If our project is helpful for your research, please consider citing :
 @article{nguyen2023cnos,
 title={CNOS: A Strong Baseline for CAD-based Novel Object Segmentation},
 author={Nguyen, Van Nguyen and Hodan, Tomas and Ponimatkin, Georgy and Groueix, Thibault and Lepetit, Vincent},
-journal={arXiv preprint arXiv:TODO},
+journal={arXiv preprint arXiv:2307.11067},
 year={2023}}
 ```
 You can also put a star :star:, if the code is useful to you.
