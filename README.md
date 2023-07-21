@@ -11,7 +11,7 @@ CNOS: A Strong Baseline for CAD-based Novel Object Segmentation
 <a href="https://vincentlepetit.github.io/" target="_blank"><nobr>Vincent Lepetit</nobr></a>
 
 <p></p>
-<a href="https://arxiv.org/abs/"><img 
+<a href="http://arxiv.org/abs/2307.11067"><img 
 src="https://img.shields.io/badge/-Paper-blue.svg?colorA=333&logo=arxiv" height=35em></a>
 <p></p>
 
