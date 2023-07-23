@@ -166,8 +166,6 @@ export OUTPUT_DIR=./tmp/custom_dataset
 
 1. Render the template from CAD models:
 ```
-export CAD_PATH=./media/demo/hope_000002.ply
-export OUTPUT_DIR=./tmp/custom_dataset
 bash ./src/scripts/render_custom.sh
 ```
 If the quality of rendering is not good, you can try to ajust the lightning conditions and distance between the camera and the object in [this script](https://github.com/nv-nguyen/cnos/tree/main/src/scripts/render_custom.sh).
