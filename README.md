@@ -47,7 +47,7 @@ If you like this project, check out related works from our group:
 
 <details><summary>Click to expand</summary>
 
-This repository is running with the Weight and Bias logger. Ensure that you update this [user's configuration](https://github.com/nv-nguyen/cnos/blob/main/configs/user/default.yaml) before conducting any experiments. 
+Please make sure that you update this [user's configuration](https://github.com/nv-nguyen/cnos/blob/main/configs/user/default.yaml) before conducting any experiments. 
 
 ### 1. Create conda environment
 ```
@@ -105,6 +105,7 @@ We provide CNOS's predictions for seven core dataset of BOP challenge with both 
 
 ```
 export DATASET_NAME=lmo 
+# adding CUDA_VISIBLE_DEVICES=$GPU_IDS if you want to use a specific GPU
 
 # with FastSAM + PBR
 python run_inference.py dataset_name=$DATASET_NAME model=cnos_fast

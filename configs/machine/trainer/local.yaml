@@ -2,7 +2,6 @@ _target_:  pytorch_lightning.Trainer
 
 max_epochs: 1000
 accelerator: gpu
-devices: [0, 1, 2, 3]
 deterministic: False
 detect_anomaly: False
 enable_progress_bar: True
@@ -14,8 +13,5 @@ log_every_n_steps: 1
 num_sanity_val_steps: 2
 limit_val_batches: 20
 limit_test_batches: 
-# Define callbacks
-defaults:
-  - logger: wandb
 
 callbacks: "${oc.dict.values: callback}"

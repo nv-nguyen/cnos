@@ -15,13 +15,7 @@ def run_inference(cfg: DictConfig):
     logging.info(
         f"Training script. The outputs of hydra will be stored in: {output_path}"
     )
-    logging.info(f"Checkpoints will be stored in: {cfg.callback.checkpoint.dirpath}")
-
     logging.info("Initializing logger, callbacks and trainer")
-    os.environ["WANDB_API_KEY"] = cfg.user.wandb_api_key
-    if cfg.machine.dryrun:
-        os.environ["WANDB_MODE"] = "offline"
-    logging.info(f"Wandb logger initialized at {cfg.save_dir}")
 
     if cfg.machine.name == "slurm":
         num_gpus = int(os.environ["SLURM_GPUS_ON_NODE"])
@@ -68,7 +62,6 @@ def run_inference(cfg: DictConfig):
         ref_dataset.load_processed_metaData(reset_metaData=True)
     else:
         raise NotImplementedError
-
     model.ref_dataset = ref_dataset
 
     segmentation_name = cfg.model.segmentor_model._target_.split(".")[-1]
