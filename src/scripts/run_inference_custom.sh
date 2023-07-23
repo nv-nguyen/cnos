@@ -1,0 +1,1 @@
+python -m src.scripts.inference_custom $OUTPUT_DIR $RGB_PATH

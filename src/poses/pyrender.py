@@ -19,6 +19,7 @@ def render(
     obj_poses,
     img_size,
     intrinsic,
+    light_itensity=0.6,
     is_tless=False,
 ):
     # camera pose is fixed as np.eye(4)
@@ -28,12 +29,14 @@ def render(
     cam_pose[2, 2] = -1
     # create scene config
     ambient_light = np.array([0.02, 0.02, 0.02, 1.0])  # np.array([1.0, 1.0, 1.0, 1.0])
+    if light_itensity != 0.6:
+        ambient_light = np.array([1.0, 1.0, 1.0, 1.0])
     scene = pyrender.Scene(
         bg_color=np.array([0.0, 0.0, 0.0, 0.0]), ambient_light=ambient_light
     )
     light = pyrender.SpotLight(
         color=np.ones(3),
-        intensity=0.6,
+        intensity=light_itensity,
         innerConeAngle=np.pi / 16.0,
         outerConeAngle=np.pi / 6.0,
     )
@@ -64,15 +67,17 @@ if __name__ == "__main__":
     )
     parser.add_argument("gpus_devices", nargs="?", help="GPU devices")
     parser.add_argument("disable_output", nargs="?", help="Disable output of blender")
-
+    parser.add_argument("light_itensity", nargs="?", type=float, default=0.6, help="Light itensity")
+    parser.add_argument("radius", nargs="?", type=float, default=1, help="Distance from camera to object")
     args = parser.parse_args()
-
+    
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus_devices
     poses = np.load(args.obj_pose)
     # we can increase high energy for lightning but it's simpler to change just scale of the object to meter
     # poses[:, :3, :3] = poses[:, :3, :3] / 1000.0
     poses[:, :3, 3] = poses[:, :3, 3] / 1000.0
-
+    if args.radius != 1:
+        poses[:, :3, 3] = poses[:, :3, 3] * args.radius
     if "tless" in args.output_dir:
         intrinsic = np.asarray(
             [1075.65091572, 0.0, 360, 0.0, 1073.90347929, 270, 0.0, 0.0, 1.0]
@@ -97,11 +102,12 @@ if __name__ == "__main__":
         mesh = pyrender.Mesh.from_trimesh(mesh, smooth=False)
     else:
         mesh = pyrender.Mesh.from_trimesh(as_mesh(mesh))
-
+    os.makedirs(args.output_dir, exist_ok=True)
     render(
         output_dir=args.output_dir,
         mesh=mesh,
         obj_poses=poses,
         intrinsic=intrinsic,
         img_size=(480, 640),
+        light_itensity=args.light_itensity,
     )

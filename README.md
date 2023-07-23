@@ -43,6 +43,9 @@ If you like this project, check out related works from our group:
 - [PIZZA: A Powerful Image-only Zero-Shot Zero-CAD Approach to 6DoF Tracking (3DV 2022)](https://github.com/nv-nguyen/pizza)
 - [BOP visualization toolkit](https://github.com/nv-nguyen/bop_viz_kit)
 
+## Updates:
+- Adding [tutorial](https://github.com/nv-nguyen/cnos##testing-on-custom-datasets-rocket) to run CNOS on custom datasets
+
 ## Installation :construction_worker:
 
 <details><summary>Click to expand</summary>
@@ -141,6 +144,39 @@ python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
 python -m src.scripts.visualize_detectron2 dataset_name=$DATASET_NAME input_file=$INPUT_FILE output_dir=$OUTPUT_DIR
 
 ```
+
+</details>
+
+##  Testing on custom datasets :rocket:
+
+You can run CNOS on your custom dataset given a RGB image and the CAD model of the target object. We provide an example of running CNOS on "BBQ sauce" sample taken from [MegaPose](https://github.com/megapose6d/megapose6d).
+
+![qualitative](./media/demo/result.png)
+
+<details><summary>Click to expand</summary>
+
+There are two steps to test CNOS on your own dataset:
+
+0. Define the path to your dataset:
+```
+export CAD_PATH=./media/demo/hope_000002.ply
+export RGB_PATH=./media/demo/bba_sauce_rgb.png
+export OUTPUT_DIR=./tmp/custom_dataset
+```
+
+1. Render the template from CAD models:
+```
+export CAD_PATH=./media/demo/hope_000002.ply
+export OUTPUT_DIR=./tmp/custom_dataset
+bash ./src/scripts/render_custom.sh
+```
+If the quality of rendering is not good, you can try to ajust the lightning conditions and distance between the camera and the object in [this script](https://github.com/nv-nguyen/cnos/tree/main/src/scripts/render_custom.sh).
+
+2. Run CNOS and visualize the results:
+```
+bash ./src/scripts/run_inference_custom.sh
+```
+The detections will be saved at $OUTPUT_DIR/cnos_results. This script is used by default for single-CAD object segmentation. If you want to segment multiple objects, please make few adaptations [this script](https://github.com/nv-nguyen/cnos/tree/main/src/scripts/inference_custom.py).
 
 </details>
 
