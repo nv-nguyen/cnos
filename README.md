@@ -44,7 +44,7 @@ If you like this project, check out related works from our group:
 - [BOP visualization toolkit](https://github.com/nv-nguyen/bop_viz_kit)
 
 ## Updates:
-- Adding [tutorial](https://github.com/nv-nguyen/cnos##testing-on-custom-datasets-rocket) to run CNOS on custom datasets
+- Adding [tutorial](https://github.com/nv-nguyen/cnos#testing-on-custom-datasets-rocket) to run CNOS on custom datasets
 
 ## Installation :construction_worker:
 
