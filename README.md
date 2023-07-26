@@ -73,7 +73,7 @@ python -m src.scripts.download_bop
 
 #### 2.2. Rendering templates with [Pyrender](https://github.com/mmatl/pyrender):
 
-This rendering is fast. For example, using a single V100 GPU, it can be done within 10 minutes. Alternatively, you can access the rendered output through [this Google Drive link (73MB)]() and unzip it into $ROOT_DIR.
+This rendering is fast. For example, using a single V100 GPU, it can be done within 10 minutes. Alternatively, you can access the rendered output through [this Google Drive link (73MB)](https://drive.google.com/file/d/10ecZvRvnHClTj7-1sO2WzD-4lXf60W8X/view?usp=sharing) and unzip it into $ROOT_DIR.
 
 ```
 python -m src.scripts.render_template_with_pyrender
