@@ -71,10 +71,10 @@ def visualize(rgb, detections, save_path="./tmp/tmp.png"):
     concat.paste(prediction, (img.shape[1], 0))
     return concat
         
-def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold):
+def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold, stability_score_thresh):
     with initialize(version_base=None, config_path="../../configs"):
         cfg = compose(config_name='run_inference.yaml')
-    
+    cfg.model.segmentor_model.stability_score_thresh = stability_score_thresh
     metric = Similarity()
     logging.info("Initializing model")
     model = instantiate(cfg.model)
@@ -112,14 +112,14 @@ def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold):
     )
     proposal_processor = CropResizePad(processing_config.image_size)
     templates = proposal_processor(images=templates, boxes=boxes).cuda()
-    save_image(inv_rgb_transform(templates), f"{template_dir}/cnos_results/templates.png", nrow=7)
+    save_image(templates, f"{template_dir}/cnos_results/templates.png", nrow=7)
     ref_feats = model.descriptor_model.compute_features(
                     templates, token_name="x_norm_clstoken"
                 )
     logging.info(f"Ref feats: {ref_feats.shape}")
     
     # run inference
-    rgb = Image.open(rgb_path)
+    rgb = Image.open(rgb_path).convert("RGB")
     detections = model.segmentor_model.generate_masks(np.array(rgb))
     detections = Detections(detections)
     decriptors = model.descriptor_model.forward(np.array(rgb), detections)
@@ -134,6 +134,9 @@ def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold):
     # get top-k detections
     scores, index = torch.topk(score_per_detection, k=num_max_dets, dim=-1)
     detections.filter(index)
+    
+    # keep only detections with score > conf_threshold
+    detections.filter(scores>conf_threshold)
     detections.add_attribute("scores", scores)
     detections.add_attribute("object_ids", torch.zeros_like(scores))
         
@@ -147,11 +150,12 @@ def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("template_dir", nargs="?", help="Path to root directory of the template")
-    parser.add_argument("rgb_path", nargs="?", help="Path to RGB image")
-    parser.add_argument("num_max_dets", nargs="?", default=1, type=int, help="Number of max detections")
-    parser.add_argument("confg_threshold", nargs="?", default=0.5, type=float, help="Confidence threshold")
+    parser.add_argument("--template_dir", nargs="?", help="Path to root directory of the template")
+    parser.add_argument("--rgb_path", nargs="?", help="Path to RGB image")
+    parser.add_argument("--num_max_dets", nargs="?", default=1, type=int, help="Number of max detections")
+    parser.add_argument("--confg_threshold", nargs="?", default=0.5, type=float, help="Confidence threshold")
+    parser.add_argument("--stability_score_thresh", nargs="?", default=0.97, type=float, help="stability_score_thresh of SAM")
     args = parser.parse_args()
 
     os.makedirs(f"{args.template_dir}/cnos_results", exist_ok=True)
-    run_inference(args.template_dir, args.rgb_path, num_max_dets=args.num_max_dets, conf_threshold=args.confg_threshold)
+    run_inference(args.template_dir, args.rgb_path, num_max_dets=args.num_max_dets, conf_threshold=args.confg_threshold, stability_score_thresh=args.stability_score_thresh)

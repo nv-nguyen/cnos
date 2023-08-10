@@ -178,6 +178,19 @@ The detections will be saved at $OUTPUT_DIR/cnos_results. This script is used by
 
 </details>
 
+Tricks and tips to improve results when running on custom objects with the sample taken from [jakob-ropers-snkeos](https://github.com/jakob-ropers-snkeos).
+
+![tips](./media/demo2/result.png)
+
+<details><summary>Click to expand</summary>
+
+
+Please note that SAM or FastSAM can perform exceptionally well, even on very small objects. However, certain parameters from the original implementation require adjustments to achieve optimal results. For example, it is recommended to reduce the default stability_score_thresh value of 0.97 to smaller settings, like 0.5 (applied after step 1 of rendering).
+```
+python -m src.scripts.inference_custom --template_dir $OUTPUT_DIR --rgb_path $RGB_PATH --stability_score_thresh 0.5
+```
+</details>
+
 ## Acknowledgement
 
 The code is adapted from [Nope](https://github.com/nv-nguyen/nope), [Segmenting Anything](https://github.com/facebookresearch/segment-anything), [DINOv2](https://github.com/facebookresearch/dinov2). 

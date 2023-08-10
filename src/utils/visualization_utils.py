@@ -12,11 +12,12 @@ from PIL import Image, ImageDraw
 from torchvision import transforms
 # from moviepy.video.io.bindings import mplfig_to_npimage
 import cv2
-
+import distinctipy
 np.random.seed(2022)
 COLORS_SPACE = np.random.randint(0, 255, size=(1000, 3))
-
-
+from skimage.feature import canny
+from skimage.morphology import binary_dilation
+from tqdm import tqdm
 def put_image_to_grid(list_imgs, adding_margin=True):
     num_col = len(list_imgs)
     b, c, h, w = list_imgs[0].shape
@@ -50,3 +51,37 @@ def resize_tensor(tensor, size):
     return F.interpolate(tensor, size, mode="bilinear", align_corners=True)
 
 
+
+
+def visualize_masks(rgb, masks, save_path="./tmp/tmp.png"):
+    img = rgb.copy()
+    gray = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
+    img = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
+    # img = (255*img).astype(np.uint8)
+    colors = distinctipy.get_colors(len(masks))
+    alpha = 0.33
+
+    for mask in tqdm(masks):
+        edge = canny(mask)
+        edge = binary_dilation(edge, np.ones((2, 2)))
+        obj_id = 0
+        temp_id = obj_id - 1
+
+        r = int(255*colors[temp_id][0])
+        g = int(255*colors[temp_id][1])
+        b = int(255*colors[temp_id][2])
+        img[mask, 0] = alpha*r + (1 - alpha)*img[mask, 0]
+        img[mask, 1] = alpha*g + (1 - alpha)*img[mask, 1]
+        img[mask, 2] = alpha*b + (1 - alpha)*img[mask, 2]   
+        img[edge, :] = 255
+    
+    img = Image.fromarray(np.uint8(img))
+    img.save(save_path)
+    prediction = Image.open(save_path)
+    
+    # concat side by side in PIL
+    img = np.array(img)
+    concat = Image.new('RGB', (img.shape[1] + prediction.size[0], img.shape[0]))
+    concat.paste(rgb, (0, 0))
+    concat.paste(prediction, (img.shape[1], 0))
+    return concat
