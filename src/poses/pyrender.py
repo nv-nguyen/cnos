@@ -8,7 +8,7 @@ import os.path as osp
 from tqdm import tqdm
 import argparse
 from src.utils.trimesh_utils import as_mesh
-
+from src.utils.trimesh_utils import get_obj_diameter
 os.environ["DISPLAY"] = ":1"
 os.environ["PYOPENGL_PLATFORM"] = "egl"
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     parser.add_argument("light_itensity", nargs="?", type=float, default=0.6, help="Light itensity")
     parser.add_argument("radius", nargs="?", type=float, default=1, help="Distance from camera to object")
     args = parser.parse_args()
-    
+    print(args)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus_devices
     poses = np.load(args.obj_pose)
     # we can increase high energy for lightning but it's simpler to change just scale of the object to meter
@@ -93,7 +93,9 @@ if __name__ == "__main__":
 
     # load mesh to meter
     mesh = trimesh.load_mesh(args.cad_path)
-    mesh.apply_scale(0.001)
+    diameter = get_obj_diameter(mesh)
+    if diameter > 100: # object is in mm
+        mesh.apply_scale(0.001)
     if is_tless:
         # setting uniform colors for mesh
         color = 0.4

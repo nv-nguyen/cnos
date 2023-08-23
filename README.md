@@ -125,6 +125,9 @@ python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rende
 # with SAM + PBR
 python run_inference.py dataset_name=$DATASET_NAME
 
+# using smaller models for FastSAM and DINOv2
+python run_inference.py dataset_name=$DATASET_NAME model=cnos_fast model.descriptor_model.model_name=dinov2_vits14 model.segmentor_model.checkpoint_path=
+
 ```
 After running this script, CNOS will output a prediction file at [this dir](https://github.com/nv-nguyen/cnos/blob/main/configs/run_inference.yaml#L9). You can then evaluate this prediction on [BOP challenge website](https://bop.felk.cvut.cz/).
 
