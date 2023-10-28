@@ -29,11 +29,13 @@ Here are some qualitative results of CNOS on the YCBV dataset. We are displaying
 ![ycbv](./media/ycbv.gif)
 If our project is helpful for your research, please consider citing : 
 ```latex
-@article{nguyen_2023_cnos,
+@inproceedings{nguyen2023cnos,
 title={CNOS: A Strong Baseline for CAD-based Novel Object Segmentation},
 author={Nguyen, Van Nguyen and Groueix, Thibault and Ponimatkin, Georgy and Lepetit, Vincent and Hodan, Tomas},
-journal={arXiv preprint arXiv:2307.11067},
-year={2023}}
+booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+pages={2134--2140},
+year={2023}
+}
 ```
 You can also put a star :star:, if the code is useful to you.
 
