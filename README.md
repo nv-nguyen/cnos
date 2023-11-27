@@ -11,8 +11,11 @@ CNOS: A Strong Baseline for CAD-based Novel Object Segmentation
 <a href="https://vincentlepetit.github.io/" target="_blank"><nobr>Vincent Lepetit</nobr></a> &emsp;
 <a href="https://cmp.felk.cvut.cz/~hodanto2/" target="_blank"><nobr>Tomáš Hodaň</nobr></a> &emsp; <br>
 <p></p>
+
+<a href="https://nv-nguyen.github.io/cnos/"><img 
+src="https://img.shields.io/badge/-Webpage-blue.svg?colorA=333&logo=html5" height=25em></a>
 <a href="http://arxiv.org/abs/2307.11067"><img 
-src="https://img.shields.io/badge/-Paper-blue.svg?colorA=333&logo=arxiv" height=35em></a>
+src="https://img.shields.io/badge/-Paper-blue.svg?colorA=333&logo=arxiv" height=25em></a>
 <p></p>
 
 ![framework](./media/framework.png)
