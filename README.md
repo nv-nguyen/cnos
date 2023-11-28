@@ -43,6 +43,7 @@ year={2023}
 You can also put a star :star:, if the code is useful to you.
 
 If you like this project, check out related works from our group:
+- [GigaPose: Fast and Robust Novel Object Pose Estimation via One Correspondence (arXiv 2023)](https://github.com/nv-nguyen/gigaPose)
 - [NOPE: Novel Object Pose Estimation from a Single Image (arXiv 2023)](https://github.com/nv-nguyen/nope)
 - [Templates for 3D Object Pose Estimation Revisited: Generalization to New objects and Robustness to Occlusions (CVPR 2022)](https://github.com/nv-nguyen/template-pose) 
 - [PIZZA: A Powerful Image-only Zero-Shot Zero-CAD Approach to 6DoF Tracking (3DV 2022)](https://github.com/nv-nguyen/pizza)
