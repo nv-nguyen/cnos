@@ -74,7 +74,11 @@ def visualize(rgb, detections, save_path="./tmp/tmp.png"):
 def run_inference(template_dir, rgb_path, num_max_dets, conf_threshold, stability_score_thresh):
     with initialize(version_base=None, config_path="../../configs"):
         cfg = compose(config_name='run_inference.yaml')
-    cfg.model.segmentor_model.stability_score_thresh = stability_score_thresh
+    cfg_segmentor = cfg.model.segmentor_model
+    if "fast_sam" in cfg_segmentor._target_:
+        logging.info("Using FastSAM, ignore stability_score_thresh!")
+    else:
+        cfg.model.segmentor_model.stability_score_thresh = stability_score_thresh
     metric = Similarity()
     logging.info("Initializing model")
     model = instantiate(cfg.model)
