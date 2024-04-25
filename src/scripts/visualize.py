@@ -80,6 +80,7 @@ def visualize(cfg: DictConfig) -> None:
         img.save(save_path)
         prediction = Image.open(save_path)
         # concat side by side in PIL
+        img = np.array(img)
         concat = Image.new('RGB', (img.shape[1] + prediction.size[0], img.shape[0]))
         concat.paste(rgb, (0, 0))
         concat.paste(prediction, (img.shape[1], 0))
