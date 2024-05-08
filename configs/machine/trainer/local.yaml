@@ -2,6 +2,7 @@ _target_:  pytorch_lightning.Trainer
 
 max_epochs: 1000
 accelerator: gpu
+devices: [0]
 deterministic: False
 detect_anomaly: False
 enable_progress_bar: True
