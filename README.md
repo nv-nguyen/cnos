@@ -143,6 +143,12 @@ python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rende
 
 # model-free tasks: with SAM + dynamic onboarding
 python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=onboarding_dynamic
+
+# model-based tasks: with SAM + PBR
+python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pyrender
+
+# model-based tasks: with SAM + pyrender
+python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pyrender
 ```
 
 For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:

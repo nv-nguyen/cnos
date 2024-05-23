@@ -25,6 +25,7 @@ class BOPTemplate(Dataset):
         processing_config,
         level_templates,
         pose_distribution,
+        num_imgs_per_obj=50,
         **kwargs,
     ):
         self.template_dir = template_dir
@@ -40,6 +41,7 @@ class BOPTemplate(Dataset):
             self.model_free_onboarding = True
         else:
             self.model_free_onboarding = False
+        self.num_imgs_per_obj = num_imgs_per_obj # to avoid memory issue
         self.obj_ids = obj_ids
         self.processing_config = processing_config
         self.rgb_transform = T.Compose(
@@ -92,12 +94,12 @@ class BOPTemplate(Dataset):
                 f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}_up",
                 f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}_down",
             ]
-            num_selected_imgs = 50  # 100 for 2 videos
+            num_selected_imgs = self.num_imgs_per_obj // 2  # 100 for 2 videos
         else:
             obj_dirs = [
                 f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}",
             ]
-            num_selected_imgs = 100
+            num_selected_imgs = self.num_imgs_per_obj
         for obj_dir in obj_dirs:
             obj_rgb_dir = Path(obj_dir) / "rgb"
             obj_mask_dir = Path(obj_dir) / "mask_visib"

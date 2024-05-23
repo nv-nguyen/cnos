@@ -8,6 +8,7 @@ reference_dataloader:
   template_dir: ${machine.root_dir}/datasets/
   level_templates: 0
   pose_distribution: all
+  num_imgs_per_obj: 50
   processing_config:
     image_size: ${model.descriptor_model.image_size}
     max_num_scenes: 10 # config for reference frames selection
