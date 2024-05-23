@@ -1,21 +1,19 @@
-import os, sys
+import os
 import numpy as np
-import shutil
 from tqdm import tqdm
 import time
+from omegaconf import DictConfig, OmegaConf
 from functools import partial
+from src.poses.utils import get_obj_poses_from_template_level
 import multiprocessing
 import logging
-import os, sys
 import os.path as osp
-from src.poses.utils import get_obj_poses_from_template_level
+import logging
+import hydra
+
 
 # set level logging
 logging.basicConfig(level=logging.INFO)
-import logging
-import hydra
-from omegaconf import DictConfig, OmegaConf
-import numpy as np
 
 
 def call_pyrender(
@@ -57,7 +55,7 @@ def render(cfg: DictConfig) -> None:
     )
     template_poses[:, :3, 3] *= 0.4  # zoom to object
 
-    for dataset_name in [
+    bop23_datasets = [
         "lmo",
         "tless",
         "tudl",
@@ -65,7 +63,12 @@ def render(cfg: DictConfig) -> None:
         "itodd",
         "hb",
         "ycbv",
-    ]:
+    ]
+    if cfg.dataset_name is None:
+        datasets = bop23_datasets
+    else:
+        datasets = [cfg.dataset_name]
+    for dataset_name in datasets:
         dataset_save_dir = osp.join(root_save_dir, dataset_name)
         logging.info(f"Rendering templates for {dataset_name}")
         os.makedirs(dataset_save_dir, exist_ok=True)
@@ -74,8 +77,12 @@ def render(cfg: DictConfig) -> None:
 
         if dataset_name in ["tless"]:
             cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models/models_cad")
+            if not os.path.exists(cad_dir):
+                cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models_cad")
         else:
             cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models/models")
+            if not os.path.exists(cad_dir):
+                cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models")
         cad_paths = []
         output_dirs = []
         object_ids = sorted(

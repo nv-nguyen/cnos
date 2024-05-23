@@ -43,14 +43,15 @@ year={2023}
 You can also put a star :star:, if the code is useful to you.
 
 If you like this project, check out related works from our group:
-- [GigaPose: Fast and Robust Novel Object Pose Estimation via One Correspondence (arXiv 2023)](https://github.com/nv-nguyen/gigaPose)
-- [NOPE: Novel Object Pose Estimation from a Single Image (arXiv 2023)](https://github.com/nv-nguyen/nope)
+- [GigaPose: Fast and Robust Novel Object Pose Estimation via One Correspondence (CVPR 2024)](https://github.com/nv-nguyen/gigaPose)
+- [NOPE: Novel Object Pose Estimation from a Single Image (CVPR 2024)](https://github.com/nv-nguyen/nope)
 - [Templates for 3D Object Pose Estimation Revisited: Generalization to New objects and Robustness to Occlusions (CVPR 2022)](https://github.com/nv-nguyen/template-pose) 
 - [PIZZA: A Powerful Image-only Zero-Shot Zero-CAD Approach to 6DoF Tracking (3DV 2022)](https://github.com/nv-nguyen/pizza)
 - [BOP visualization toolkit](https://github.com/nv-nguyen/bop_viz_kit)
 
 ## Updates:
-- Adding [tutorial](https://github.com/nv-nguyen/cnos#testing-on-custom-datasets-rocket) to run CNOS on custom datasets
+- 23/05/2024: Added [tutorial](https://github.com/nv-nguyen/cnos?tab=readme-ov-file#testing-on-bop-datasets-rocket) to run CNOS on [HOPE dataset](https://bop.felk.cvut.cz/datasets/) for [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/).
+- 23/07/2023: Added [tutorial](https://github.com/nv-nguyen/cnos#testing-on-custom-datasets-rocket) to run CNOS on custom datasets
 
 ## Installation :construction_worker:
 
@@ -73,14 +74,28 @@ pip install ultralytics==8.0.135
 ### 2. Datasets and model weights
 
 #### 2.1. Download datasets from [BOP challenge](https://bop.felk.cvut.cz/datasets/):
+
+For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) core datasets (HOPE, HANDAL, HOT-3D), download each dataset with the following command:
 ```
-python -m src.scripts.download_bop
+pip install -U "huggingface_hub[cli]"
+export DATASET_NAME=hope
+python -m src.scripts.download_bop24 dataset_name=$DATASET_NAME
+```
+
+For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) core datasets (LMO, TLESS, TUDL, ICBIN, ITODD, HB, and TLESS), download all datasets with the following command:
+```
+python -m src.scripts.download_bop23
 ```
 
 #### 2.2. Rendering templates with [Pyrender](https://github.com/mmatl/pyrender):
+Note: This rendering is fast. For example, using a single V100 GPU, it can be done within 10 minutes for seven core datasets of BOP'23. 
 
-This rendering is fast. For example, using a single V100 GPU, it can be done within 10 minutes. Alternatively, you can access the rendered output through [this Google Drive link (4.64GB)](https://drive.google.com/file/d/1yz2-q74PGws1OtDalX3ySo7AhiwWveK1/view?usp=sharing) and unzip it into $ROOT_DIR.
-
+For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) core datasets (HOPE, HANDAL, HOT-3D), rendering templates with Pyrender is only required for model-based tasks, while for model-free tasks, you can skip this step since the images in onboarding videos can be used directly. To render templates for model-based tasks:
+```
+export DATASET_NAME=hope
+python -m src.scripts.render_template_with_pyrender dataset_name=$DATASET_NAME
+```
+For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) core datasets (LMO, TLESS, TUDL, ICBIN, ITODD, HB, and TLESS), you can use the pre-rendered templates at [this Google Drive link (4.64GB)](https://drive.google.com/file/d/1yz2-q74PGws1OtDalX3ySo7AhiwWveK1/view?usp=sharing) and unzip it into $ROOT_DIR or render template from scratch with:
 ```
 python -m src.scripts.render_template_with_pyrender
 ```
@@ -96,9 +111,18 @@ python -m src.scripts.download_fastsam
 ```
 
 #### 2.5. Download [BlenderProc4BOP](https://bop.felk.cvut.cz/datasets/) set:
-This is only required when you want to use realistic rendering with BlenderProc for seven core datasets of BOP challenge.
+This is only required when you want to use realistic rendering with BlenderProc.
+
+
+For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) core datasets (HOPE, HANDAL, HOT-3D):
 ```
-python -m src.scripts.download_train_pbr
+pip install -U "huggingface_hub[cli]"
+export DATASET_NAME=hope
+python -m src.scripts.download_train_pbr_bop24 dataset_name=$DATASET_NAME
+```
+For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) core datasets (LMO, TLESS, TUDL, ICBIN, ITODD, HB, and TLESS):
+```
+python -m src.scripts.download_train_pbr_bop23
 ```
 
 
@@ -106,7 +130,7 @@ python -m src.scripts.download_train_pbr
 
 ##  Testing on [BOP datasets](https://bop.felk.cvut.cz/datasets/) :rocket:
 
-We provide CNOS's predictions for seven core dataset of BOP challenge with both SAM and FastSAM models in [this link](https://drive.google.com/drive/folders/1yGRKpz1RI4h5-u0drusVeXPuAsg_GIO5?usp=sharing).
+We provide CNOS's predictions for three core dataset of [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) with SAM model and seven core dataset of [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) with both SAM and FastSAM models in [this link](https://drive.google.com/drive/folders/1yGRKpz1RI4h5-u0drusVeXPuAsg_GIO5?usp=sharing).
 
 <details><summary>Click to expand</summary>
 

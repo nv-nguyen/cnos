@@ -1,12 +1,12 @@
+from omegaconf import DictConfig, OmegaConf
 import logging
-import os, sys
+import os
 import os.path as osp
+import logging
+import hydra
 
 # set level logging
 logging.basicConfig(level=logging.INFO)
-import logging
-import hydra
-from omegaconf import DictConfig, OmegaConf
 
 
 def run_download(config_dataset: DictConfig) -> None:
@@ -67,7 +67,7 @@ def download(cfg: DictConfig) -> None:
             }
         )
         run_download(config_dataset)
-        logging.info(f"---" * 100)
+        logging.info("---" * 100)
 
 
 if __name__ == "__main__":
