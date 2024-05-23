@@ -40,7 +40,7 @@ def download(cfg: DictConfig) -> None:
         logging.info(f"Removed {local_dir}/{name}.zip")
 
     # unzip the dataset
-    unzip_cmd = f"{local_dir}/{name}_all.zip -d {local_dir}"
+    unzip_cmd = f"unzip {local_dir}/{name}_all.zip -d {local_dir}"
     logging.info(f"Running {unzip_cmd}")
     os.system(unzip_cmd)
     logging.info(f"Dataset downloaded to {local_dir}")
