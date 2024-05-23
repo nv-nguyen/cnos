@@ -30,12 +30,16 @@ class BOPTemplate(Dataset):
         self.template_dir = template_dir
         if obj_ids is None:
             obj_ids = [
-                int(obj_id[4:])
+                int(obj_id[4:10])
                 for obj_id in os.listdir(template_dir)
                 if osp.isdir(osp.join(template_dir, obj_id))
             ]
-            obj_ids = sorted(obj_ids)
+            obj_ids = sorted(np.unique(obj_ids).tolist())
             logging.info(f"Found {obj_ids} objects in {self.template_dir}")
+        if "onboarding_static" in template_dir or "onboarding_dynamic" in template_dir:
+            self.model_free_onboarding = True
+        else:
+            self.model_free_onboarding = False
         self.obj_ids = obj_ids
         self.processing_config = processing_config
         self.rgb_transform = T.Compose(
@@ -55,7 +59,7 @@ class BOPTemplate(Dataset):
         else:
             raise NotImplementedError
 
-    def __getitem__(self, idx):
+    def __getitem__modelbased__(self, idx):
         templates, masks, boxes = [], [], []
         for id_template in self.index_templates:
             image = Image.open(
@@ -79,6 +83,65 @@ class BOPTemplate(Dataset):
             "templates": self.rgb_transform(templates_croped),
             "template_masks": masks_cropped[:, 0, :, :],
         }
+
+    def __getitem__modelfree__(self, idx):
+        templates, masks, boxes = [], [], []
+        static_onboarding = True if "onboarding_static" in self.template_dir else False
+        if static_onboarding:
+            obj_dirs = [
+                f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}_up",
+                f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}_down",
+            ]
+            num_selected_imgs = 50  # 100 for 2 videos
+        else:
+            obj_dirs = [
+                f"{self.template_dir}/obj_{self.obj_ids[idx]:06d}",
+            ]
+            num_selected_imgs = 100
+        for obj_dir in obj_dirs:
+            obj_rgb_dir = Path(obj_dir) / "rgb"
+            obj_mask_dir = Path(obj_dir) / "mask_visib"
+            # rgb and mask do not have same extension .png or .jpg
+            # list all rgb
+            obj_images = sorted(list(obj_rgb_dir.glob("*.png")))
+            if len(obj_images) == 0:
+                obj_images = sorted(list(obj_rgb_dir.glob("*.jpg")))
+            # list all masks
+            obj_masks = sorted(list(obj_mask_dir.glob("*.png")))
+            if len(obj_masks) == 0:
+                obj_masks = sorted(list(obj_mask_dir.glob("*.jpg")))
+            assert len(obj_images) == len(
+                obj_masks
+            ), f"rgb and mask mismatch in {obj_dir}"
+            selected_idx = np.random.choice(
+                len(obj_images), num_selected_imgs, replace=False
+            )
+            for idx_img in tqdm(selected_idx):
+                image = Image.open(obj_images[idx_img])
+                mask = Image.open(obj_masks[idx_img])
+                boxes.append(mask.getbbox())
+
+                mask = torch.from_numpy(np.array(mask) / 255).float()
+                masks.append(mask.unsqueeze(-1))
+
+                image = torch.from_numpy(np.array(image.convert("RGB")) / 255).float()
+                templates.append(image)
+
+        templates = torch.stack(templates).permute(0, 3, 1, 2)
+        masks = torch.stack(masks).permute(0, 3, 1, 2)
+        boxes = torch.tensor(np.array(boxes))
+        templates_croped = self.proposal_processor(images=templates, boxes=boxes)
+        masks_cropped = self.proposal_processor(images=masks, boxes=boxes)
+        return {
+            "templates": self.rgb_transform(templates_croped),
+            "template_masks": masks_cropped[:, 0, :, :],
+        }
+
+    def __getitem__(self, idx):
+        if self.model_free_onboarding:
+            return self.__getitem__modelfree__(idx)
+        else:
+            return self.__getitem__modelbased__(idx)
 
 
 class BaseBOPTest(BaseBOP):
@@ -133,7 +196,7 @@ if __name__ == "__main__":
         ]
     )
     dataset = BOPTemplate(
-        template_dir="/home/nguyen/Documents/datasets/bop23/datasets/templates_pyrender/lmo",
+        template_dir="/home/nguyen/Documents/datasets/bop24/datasets/hope/onboarding_dynamic",
         obj_ids=None,
         level_templates=0,
         pose_distribution="all",

@@ -50,7 +50,15 @@ def run_inference(cfg: DictConfig):
         num_workers=cfg.machine.num_workers,
         shuffle=False,
     )
-    if cfg.model.onboarding_config.rendering_type == "pyrender":
+    if cfg.model.onboarding_config.rendering_type == "onboarding_static":
+        logging.info("Using static onboarding images")
+        ref_dataloader_config.template_dir += f"{cfg.dataset_name}/onboarding_static"
+        ref_dataset = instantiate(ref_dataloader_config)
+    elif cfg.model.onboarding_config.rendering_type == "onboarding_dynamic":
+        logging.info("Using dynamic onboarding images")
+        ref_dataloader_config.template_dir += f"{cfg.dataset_name}/onboarding_dynamic"
+        ref_dataset = instantiate(ref_dataloader_config)
+    elif cfg.model.onboarding_config.rendering_type == "pyrender":
         ref_dataloader_config.template_dir += f"templates_pyrender/{cfg.dataset_name}"
         ref_dataset = instantiate(ref_dataloader_config)
     elif cfg.model.onboarding_config.rendering_type == "pbr":

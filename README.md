@@ -114,7 +114,7 @@ python -m src.scripts.download_fastsam
 This is only required when you want to use realistic rendering with BlenderProc.
 
 
-For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) core datasets (HOPE, HANDAL, HOT-3D):
+For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2024/) core datasets (HOPE, HANDAL, HOT-3D), this download is only required for model-based tasks:
 ```
 pip install -U "huggingface_hub[cli]"
 export DATASET_NAME=hope
@@ -135,7 +135,17 @@ We provide CNOS's predictions for three core dataset of [BOP challenge 2024](htt
 <details><summary>Click to expand</summary>
 
 1. Run CNOS to get predictions:
+For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:
+```
+export DATASET_NAME=hope
+# model-free tasks: with SAM + static onboarding
+python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=onboarding_static
 
+# model-free tasks: with SAM + dynamic onboarding
+python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=onboarding_dynamic
+```
+
+For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:
 ```
 export DATASET_NAME=lmo 
 # adding CUDA_VISIBLE_DEVICES=$GPU_IDS if you want to use a specific GPU
