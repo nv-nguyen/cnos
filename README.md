@@ -135,6 +135,7 @@ We provide CNOS's predictions for three core dataset of [BOP challenge 2024](htt
 <details><summary>Click to expand</summary>
 
 1. Run CNOS to get predictions:
+
 For [BOP challenge 2024](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:
 ```
 export DATASET_NAME=hope
@@ -145,11 +146,22 @@ python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rende
 python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=onboarding_dynamic
 
 # model-based tasks: with SAM + PBR
-python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pyrender
+python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pbr
 
 # model-based tasks: with SAM + pyrender
 python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pyrender
 ```
+Quantative results on HOPE (only RealSense testing images, BOP'19-23) and HOPE_v2 (both RealSense and Vicon testing images, BOP'24):
+
+| Dataset      | Task      | Static onboarding  | Dynamic onboarding | Model-based PBR  | Model-based Pyrender |
+|---------------|---------------|-----------|----------|-----------|----------|
+| HOPE  | 2D detection  | 39.8 | 40.8 | 41.6 | 39.3 |
+| HOPE_v2  | 2D detection  | 33.4 | 32.4 | 35.4 | 33.5 |
+| HOPE  | 2D segmentation  | 52.2 | 54.7 | 57.2 | 52.9 |
+| HOPE_v2  | 2D segmentation  | 43.5 | 43.4 | 47.5 | 44.9 |
+
+
+
 
 For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:
 ```
