@@ -41,7 +41,7 @@ class BOPTemplate(Dataset):
             self.model_free_onboarding = True
         else:
             self.model_free_onboarding = False
-        self.num_imgs_per_obj = num_imgs_per_obj # to avoid memory issue
+        self.num_imgs_per_obj = num_imgs_per_obj  # to avoid memory issue
         self.obj_ids = obj_ids
         self.processing_config = processing_config
         self.rgb_transform = T.Compose(
@@ -121,6 +121,8 @@ class BOPTemplate(Dataset):
             for idx_img in tqdm(selected_idx):
                 image = Image.open(obj_images[idx_img])
                 mask = Image.open(obj_masks[idx_img])
+                image = np.asarray(image) * np.expand_dims(np.asarray(mask) > 0, -1)
+                image = Image.fromarray(image)
                 boxes.append(mask.getbbox())
 
                 mask = torch.from_numpy(np.array(mask) / 255).float()
