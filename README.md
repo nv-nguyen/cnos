@@ -151,14 +151,14 @@ python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rende
 # model-based tasks: with SAM + pyrender
 python run_inference.py dataset_name=$DATASET_NAME model.onboarding_config.rendering_type=pyrender
 ```
-Quantative results on HOPE (only RealSense testing images, BOP'19-23) and HOPE_v2 (both RealSense and Vicon testing images, BOP'24):
+Quantitative results on HOPE (only RealSense testing images, BOP'19-23) and HOPE_v2 (both RealSense and Vicon testing images, BOP'24):
 
 | Dataset      | Task      | Static onboarding  | Dynamic onboarding | Model-based PBR  | Model-based Pyrender |
 |---------------|---------------|-----------|----------|-----------|----------|
 | HOPE  | 2D detection  | 39.8 | 40.8 | 41.6 | 39.3 |
 | HOPE_v2  | 2D detection  | 33.4 | 32.4 | 35.4 | 33.5 |
-| HOPE  | 2D segmentation  | 52.2 | 54.7 | 57.2 | 52.9 |
-| HOPE_v2  | 2D segmentation  | 43.5 | 43.4 | 47.5 | 44.9 |
+| HOPE  | 2D segment.  | 52.2 | 54.7 | 57.2 | 52.9 |
+| HOPE_v2  | 2D segment.  | 43.5 | 43.4 | 47.5 | 44.9 |
 
 
 
