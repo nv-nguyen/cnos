@@ -71,6 +71,7 @@ if __name__ == "__main__":
     parser.add_argument("radius", nargs="?", type=float, default=1, help="Distance from camera to object")
     args = parser.parse_args()
     print(args)
+    is_hot3d = "hot3d" in args.output_dir
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus_devices
     poses = np.load(args.obj_pose)
     # we can increase high energy for lightning but it's simpler to change just scale of the object to meter
@@ -93,15 +94,22 @@ if __name__ == "__main__":
 
     # load mesh to meter
     mesh = trimesh.load_mesh(args.cad_path)
+
     diameter = get_obj_diameter(mesh)
-    if diameter > 100: # object is in mm
+    if not is_hot3d and diameter > 100: # object is in mm
         mesh.apply_scale(0.001)
+
     if is_tless:
         # setting uniform colors for mesh
         color = 0.4
         mesh.visual.face_colors = np.ones((len(mesh.faces), 3)) * color
         mesh.visual.vertex_colors = np.ones((len(mesh.vertices), 3)) * color
         mesh = pyrender.Mesh.from_trimesh(mesh, smooth=False)
+    elif is_hot3d:
+        mesh = pyrender.Mesh.from_trimesh(list(mesh.geometry.values())[0])
+        ## Rescale mesh vertices to be as same unit as the other dataset values
+        geometry = mesh.primitives[0].positions
+        mesh.primitives[0].positions = geometry * 0.001
     else:
         mesh = pyrender.Mesh.from_trimesh(as_mesh(mesh))
     os.makedirs(args.output_dir, exist_ok=True)

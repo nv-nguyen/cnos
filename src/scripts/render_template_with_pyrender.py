@@ -35,6 +35,7 @@ def call_pyrender(
 
     # command = f"blenderproc run ./src/poses/blenderproc.py {cad_path} {obj_pose_path} {output_dir} {gpus_devices}"
     command = f"python -m src.poses.pyrender {cad_path} {obj_pose_path} {output_dir} {gpus_devices}"
+    print(f"executing command:\n{command}")
     if disable_output:
         command += " true"
     else:
@@ -75,11 +76,19 @@ def render(cfg: DictConfig) -> None:
         obj_pose_path = f"{dataset_save_dir}/template_poses.npy"
         np.save(obj_pose_path, template_poses)
 
+        cad_file_ext = None
         if dataset_name in ["tless"]:
+            cad_file_ext = ".ply"
             cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models/models_cad")
             if not os.path.exists(cad_dir):
                 cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models_cad")
+        elif dataset_name == "hot3d":
+            cad_file_ext = ".glb"
+            cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "object_models")
+            if not os.path.exists(cad_dir):
+                raise Exception(f"cad folder not found. cad_dir: {cad_dir}")            
         else:
+            cad_file_ext = ".ply"
             cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models/models")
             if not os.path.exists(cad_dir):
                 cad_dir = os.path.join(cfg.data.root_dir, dataset_name, "models")
@@ -89,14 +98,16 @@ def render(cfg: DictConfig) -> None:
             [
                 int(name[4:][:-4])
                 for name in os.listdir(cad_dir)
-                if name.endswith(".ply")
+                if name.endswith(cad_file_ext)
             ]
         )
+        print(f"num object_ids found: {len(object_ids)}")
+        print(f"object_ids: {object_ids}")
         for object_id in object_ids:
             cad_paths.append(
                 os.path.join(
                     cad_dir,
-                    "obj_{:06d}.ply".format(object_id),
+                    f"obj_{object_id:06d}{cad_file_ext}",
                 )
             )
             output_dirs.append(
