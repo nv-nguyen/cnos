@@ -218,7 +218,7 @@ class CNOS(pl.LightningModule):
         )
         return 0
 
-    def test_epoch_end(self, outputs):
+    def on_test_epoch_end(self):
         if self.global_rank == 0:  # only rank 0 process
             # can use self.all_gather to gather results from all processes
             # but it is simpler just load the results from files so no file is missing

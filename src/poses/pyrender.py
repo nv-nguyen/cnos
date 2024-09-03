@@ -107,9 +107,11 @@ if __name__ == "__main__":
         mesh = pyrender.Mesh.from_trimesh(mesh, smooth=False)
     elif is_hot3d:
         mesh = pyrender.Mesh.from_trimesh(list(mesh.geometry.values())[0])
-        ## Rescale mesh vertices to be as same unit as the other dataset values
-        geometry = mesh.primitives[0].positions
-        mesh.primitives[0].positions = geometry * 0.001
+        if "obj_000023" not in args.cad_path:
+            ## Rescale mesh vertices to be as same unit as the other dataset values
+            ## obj_000023 is skipped as its already in meters.
+            geometry = mesh.primitives[0].positions
+            mesh.primitives[0].positions = geometry * 0.001
     else:
         mesh = pyrender.Mesh.from_trimesh(as_mesh(mesh))
     os.makedirs(args.output_dir, exist_ok=True)
