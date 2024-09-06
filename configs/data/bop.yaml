@@ -94,3 +94,7 @@ datasets:
     cad: tyol_models.zip
     test: tyol_test_bop19.zip
     obj_names: [001_obj, 002_obj, 003_obj, 004_obj, 005_obj, 006_obj, 007_obj, 008_obj, 009_obj, 010_obj, 011_obj, 012_obj, 013_obj, 014_obj, 015_obj, 016_obj, 017_obj, 018_obj, 019_obj, 020_obj, 021_obj]
+  hot3d:
+    cad: None
+    test: None
+    obj_names: [obj_000001, obj_000002, obj_000003, obj_000004, obj_000005, obj_000006, obj_000007, obj_000008, obj_000009, obj_000010, obj_000011, obj_000012, obj_000013, obj_000014, obj_000015, obj_000016, obj_000017, obj_000018, obj_000019, obj_000020, obj_000021, obj_000022, obj_000023, obj_000024, obj_000025, obj_000026, obj_000027, obj_000028, obj_000029, obj_000030, obj_000031, obj_000032, obj_000033]

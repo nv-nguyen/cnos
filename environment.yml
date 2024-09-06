@@ -9,6 +9,7 @@ dependencies:
   - pip
   - python=3.9.6
   - pip:
+    - numpy==1.26.4
     - torch
     - torchvision
     - omegaconf
@@ -26,10 +27,11 @@ dependencies:
     - hydra-colorlog
     - hydra-core
     - gdown
-    - pytorch-lightning==1.8.1
+    - pytorch-lightning==1.8.6
     - pandas
     - ruamel.yaml
     - pyrender
     - wandb
     - distinctipy
+    - git+https://github.com/facebookresearch/hand_tracking_toolkit.git
 # bop https://github.com/thodan/bop_toolkit.git
