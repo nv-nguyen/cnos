@@ -131,6 +131,13 @@ class CNOS(pl.LightningModule):
         idx_selected_proposals = torch.arange(
             len(score_per_proposal), device=score_per_proposal.device
         )[score_per_proposal > self.matching_config.confidence_thresh]
+        # for bop challenge, we only keep top 100 instances
+        if len(idx_selected_proposals) > self.matching_config.max_num_instances:
+            logging.info(f"Selecting top {self.matching_config.max_num_instances} instances ...")
+            _, idx = torch.topk(
+                score_per_proposal[idx_selected_proposals], k=self.matching_config.max_num_instances
+            )
+            idx_selected_proposals = idx_selected_proposals[idx]
         pred_idx_objects = assigned_idx_object[idx_selected_proposals]
         pred_scores = score_per_proposal[idx_selected_proposals]
         return idx_selected_proposals, pred_idx_objects, pred_scores
