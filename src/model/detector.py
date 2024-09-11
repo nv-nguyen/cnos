@@ -27,6 +27,7 @@ class CNOS(pl.LightningModule):
         post_processing_config,
         log_interval,
         log_dir,
+        save_mask,
         **kwargs,
     ):
         # define the network
@@ -39,6 +40,7 @@ class CNOS(pl.LightningModule):
         self.post_processing_config = post_processing_config
         self.log_interval = log_interval
         self.log_dir = log_dir
+        self.save_mask = save_mask
 
         os.makedirs(self.log_dir, exist_ok=True)
         os.makedirs(osp.join(self.log_dir, "predictions"), exist_ok=True)
@@ -216,6 +218,7 @@ class CNOS(pl.LightningModule):
             file_path=file_path,
             dataset_name=self.dataset_name,
             return_results=True,
+            save_mask=self.save_mask,
         )
         # save runtime to file
         np.savez(

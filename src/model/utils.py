@@ -151,7 +151,7 @@ class Detections:
             setattr(self, key, torch.from_numpy(getattr(self, key)))
 
     def save_to_file(
-        self, scene_id, frame_id, runtime, file_path, dataset_name, return_results=False
+        self, scene_id, frame_id, runtime, file_path, dataset_name, return_results=False, save_mask=True
     ):
         """
         scene_id, image_id, category_id, bbox, time
@@ -166,22 +166,23 @@ class Detections:
             "score": self.scores,
             "bbox": boxes,
             "time": runtime,
-            "segmentation": self.masks,
         }
+        if save_mask:
+            results["segmentation"] = self.masks
         save_npz(file_path, results)
         if return_results:
             return results
 
     def load_from_file(self, file_path):
         data = np.load(file_path)
-        masks = data["segmentation"]
         boxes = xywh_to_xyxy(np.array(data["bbox"]))
-        data = {
+        output = {
             "object_ids": data["category_id"] - 1,
             "bbox": boxes,
             "scores": data["score"],
-            "masks": masks,
         }
+        if "segmentation" in data.keys():
+            output["masks"] = data["segmentation"]
         logging.info(f"Loaded {file_path}")
         return data
 
@@ -208,9 +209,10 @@ def convert_npz_to_json(idx, list_npz_paths):
             "bbox": detections["bbox"][idx_det].tolist(),
             "score": float(detections["score"][idx_det]),
             "time": float(detections["time"]),
-            "segmentation": mask_to_rle(
-                force_binary_mask(detections["segmentation"][idx_det])
-            ),
         }
+        if "segmentation" in detections.keys():
+            result["segmentation"] = mask_to_rle(
+                force_binary_mask(detections["segmentation"][idx_det])
+            )
         results.append(result)
     return results

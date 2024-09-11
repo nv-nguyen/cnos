@@ -27,3 +27,5 @@ onboarding_config:
   rendering_type: pbr
   reset_descriptors: False
   level_templates: 0 # 0 is coarse, 1 is medium, 2 is dense
+
+save_mask: True
