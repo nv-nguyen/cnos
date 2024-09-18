@@ -160,8 +160,11 @@ Quantitative results on HOPE (only RealSense testing images, BOP'19-23) and HOPE
 | HOPE  | 2D segmentation  | 52.2 | 54.7 | 57.2 | 52.9 |
 | HOPE_v2  | 2D segmentation  | 43.5 | 43.4 | 47.5 | 44.9 |
 
-
-
+For [HOT3D](https://facebookresearch.github.io/hot3d/) datasets:
+```
+huggingface-cli download bop-benchmark/datasets --include "hot3d/object_models/*" --local-dir $DATASET_DIR --repo-type=dataset
+python -m src.scripts.render_template_with_pyrender dataset_name=hot3d
+```
 
 For [BOP challenge 2023](https://bop.felk.cvut.cz/challenges/bop-challenge-2023/) datasets:
 ```

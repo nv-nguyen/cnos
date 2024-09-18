@@ -21,6 +21,7 @@ def render(
     intrinsic,
     light_itensity=0.6,
     is_tless=False,
+    re_center_transform=np.eye(4),
 ):
     # camera pose is fixed as np.eye(4)
     cam_pose = np.eye(4)
@@ -52,7 +53,7 @@ def render(
     cad_node = scene.add(mesh, pose=np.eye(4), name="cad")
 
     for idx_frame in range(obj_poses.shape[0]):
-        scene.set_pose(cad_node, obj_poses[idx_frame])
+        scene.set_pose(cad_node, obj_poses[idx_frame] @ re_center_transform)
         rgb, depth = render_engine.render(scene, pyrender.constants.RenderFlags.RGBA)
         rgb = Image.fromarray(np.uint8(rgb))
         rgb.save(osp.join(output_dir, f"{idx_frame:06d}.png"))
@@ -95,6 +96,11 @@ if __name__ == "__main__":
     # load mesh to meter
     mesh = trimesh.load_mesh(args.cad_path)
 
+    # re-center objects at the origin
+    re_center_transform = np.eye(4)
+    re_center_transform[:3, 3] = -mesh.bounding_box.centroid
+    print(f"Object center at {mesh.bounding_box.centroid}")
+
     diameter = get_obj_diameter(mesh)
     if not is_hot3d and diameter > 100: # object is in mm
         mesh.apply_scale(0.001)
@@ -122,4 +128,5 @@ if __name__ == "__main__":
         intrinsic=intrinsic,
         img_size=(480, 640),
         light_itensity=args.light_itensity,
+        re_center_transform=re_center_transform,
     )

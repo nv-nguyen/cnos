@@ -87,13 +87,14 @@ class CustomResizeLongestSide(ResizeLongestSide):
 
 
 class CropResizePad:
-    def __init__(self, target_size):
+    def __init__(self, target_size, pad_value=0.0):
         if isinstance(target_size, int):
             target_size = (target_size, target_size)
         self.target_size = target_size
         self.target_ratio = self.target_size[1] / self.target_size[0]
         self.target_h, self.target_w = target_size
         self.target_max = max(self.target_h, self.target_w)
+        self.pad_value = pad_value
 
     def __call__(self, images, boxes):
         box_sizes = boxes[:, 2:] - boxes[:, :2]
@@ -114,7 +115,7 @@ class CropResizePad:
                 padding_left = max((self.target_w - original_w) // 2, 0)
                 padding_right = self.target_w - original_w - padding_left
                 image = F.pad(
-                    image, (padding_left, padding_right, padding_top, padding_bottom)
+                    image, (padding_left, padding_right, padding_top, padding_bottom), value=self.pad_value
                 )
             assert image.shape[1] == image.shape[2], logging.info(
                 f"image {image.shape} is not square after padding"

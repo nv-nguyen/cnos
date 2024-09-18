@@ -41,6 +41,12 @@ class BOPTemplate(Dataset):
             self.model_free_onboarding = True
         else:
             self.model_free_onboarding = False
+        # for HOT3D, we have black objects so we use gray background
+        if "hot3d" in template_dir:
+            self.use_gray_background = True
+            logging.info("Use gray background for HOT3D")
+        else:
+            self.use_gray_background = False
         self.num_imgs_per_obj = num_imgs_per_obj  # to avoid memory issue
         self.obj_ids = obj_ids
         self.processing_config = processing_config
@@ -49,7 +55,7 @@ class BOPTemplate(Dataset):
                 T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
             ]
         )
-        self.proposal_processor = CropResizePad(self.processing_config.image_size)
+        self.proposal_processor = CropResizePad(self.processing_config.image_size, pad_value=0.5 if self.use_gray_background else 0)
         self.load_template_poses(level_templates, pose_distribution)
 
     def __len__(self):
@@ -73,7 +79,13 @@ class BOPTemplate(Dataset):
             mask = torch.from_numpy(np.array(mask) / 255).float()
             masks.append(mask.unsqueeze(-1))
 
-            image = torch.from_numpy(np.array(image.convert("RGB")) / 255).float()
+            if self.use_gray_background:
+                gray_image = Image.new("RGB", image.size, (128, 128, 128))
+                gray_image.paste(image, mask=image.getchannel("A"))
+                image = gray_image.convert("RGB")
+            else:
+                image = image.convert("RGB")
+            image = torch.from_numpy(np.array(image) / 255).float()
             templates.append(image)
 
         templates = torch.stack(templates).permute(0, 3, 1, 2)
@@ -200,7 +212,7 @@ if __name__ == "__main__":
         ]
     )
     dataset = BOPTemplate(
-        template_dir="/home/nguyen/Documents/datasets/bop24/datasets/hope/onboarding_dynamic",
+        template_dir="/home/nguyen/Documents/datasets/gigaPose_datasets/datasets/templates_pyrender/hot3d",
         obj_ids=None,
         level_templates=0,
         pose_distribution="all",
@@ -209,4 +221,4 @@ if __name__ == "__main__":
     for idx in tqdm(range(len(dataset))):
         sample = dataset[idx]
         sample["templates"] = inv_rgb_transform(sample["templates"])
-        save_image(sample["templates"], f"./tmp/lm_{idx}.png", nrow=7)
+        save_image(sample["templates"], f"./tmp/hot3d_{idx}.png", nrow=7)
