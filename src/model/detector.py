@@ -142,7 +142,8 @@ class CNOS(pl.LightningModule):
             idx_selected_proposals = idx_selected_proposals[idx]
         pred_idx_objects = assigned_idx_object[idx_selected_proposals]
         pred_scores = score_per_proposal[idx_selected_proposals]
-        return idx_selected_proposals, pred_idx_objects, pred_scores
+        pred_score_distribution = score_per_proposal_and_object[idx_selected_proposals]
+        return idx_selected_proposals, pred_idx_objects, pred_scores, pred_score_distribution
 
     def test_step(self, batch, idx):
         if idx == 0:
@@ -184,11 +185,13 @@ class CNOS(pl.LightningModule):
             idx_selected_proposals,
             pred_idx_objects,
             pred_scores,
+            pred_score_distribution,
         ) = self.find_matched_proposals(query_decriptors)
 
         # update detections
         detections.filter(idx_selected_proposals)
         detections.add_attribute("scores", pred_scores)
+        detections.add_attribute("score_distribution", pred_score_distribution)
         detections.add_attribute("object_ids", pred_idx_objects)
         detections.apply_nms_per_object_id(
             nms_thresh=self.post_processing_config.nms_thresh
@@ -219,6 +222,7 @@ class CNOS(pl.LightningModule):
             dataset_name=self.dataset_name,
             return_results=True,
             save_mask=self.save_mask,
+            save_score_distribution=True,
         )
         # save runtime to file
         np.savez(
@@ -260,9 +264,15 @@ class CNOS(pl.LightningModule):
                 )
             )
             formatted_detections = []
+            formatted_detections_with_score_distribution = []
             for detection in tqdm(detections, desc="Loading results ..."):
-                formatted_detections.extend(detection)
+                formatted_detections.extend(detection[0])
+                formatted_detections_with_score_distribution.extend(detection[1])
 
             detections_path = f"{self.log_dir}/{self.name_prediction_file}.json"
             save_json_bop23(detections_path, formatted_detections)
-            logging.info(f"Saved predictions to {detections_path}")
+            logging.info(f"Saved predictions (BOP format) to {detections_path}")
+
+            detections_path = f"{self.log_dir}/{self.name_prediction_file}_with_score_distribution.json"
+            save_json_bop23(detections_path, formatted_detections_with_score_distribution)
+            logging.info(f"Saved predictions (BOP format + score distribution) to {detections_path} ")

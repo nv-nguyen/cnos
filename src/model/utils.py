@@ -151,7 +151,7 @@ class Detections:
             setattr(self, key, torch.from_numpy(getattr(self, key)))
 
     def save_to_file(
-        self, scene_id, frame_id, runtime, file_path, dataset_name, return_results=False, save_mask=True
+        self, scene_id, frame_id, runtime, file_path, dataset_name, return_results=False, save_mask=True, save_score_distribution=False
     ):
         """
         scene_id, image_id, category_id, bbox, time
@@ -169,6 +169,9 @@ class Detections:
         }
         if save_mask:
             results["segmentation"] = self.masks
+        if save_score_distribution:
+            assert hasattr(self, "score_distribution"), "score_distribution is not defined"
+            results["score_distribution"] = self.score_distribution
         save_npz(file_path, results)
         if return_results:
             return results
@@ -183,6 +186,8 @@ class Detections:
         }
         if "segmentation" in data.keys():
             output["masks"] = data["segmentation"]
+        if "score_distribution" in data.keys():
+            output["score_distribution"] = data["score_distribution"]
         logging.info(f"Loaded {file_path}")
         return data
 
@@ -201,6 +206,7 @@ def convert_npz_to_json(idx, list_npz_paths):
     npz_path = list_npz_paths[idx]
     detections = np.load(npz_path)
     results = []
+    results_with_score_distribution = []
     for idx_det in range(len(detections["bbox"])):
         result = {
             "scene_id": int(detections["scene_id"]),
@@ -215,4 +221,9 @@ def convert_npz_to_json(idx, list_npz_paths):
                 force_binary_mask(detections["segmentation"][idx_det])
             )
         results.append(result)
-    return results
+
+        if "score_distribution" in detections.keys():
+            result_with_score_distribution = result.copy()
+            result_with_score_distribution["score_distribution"] = detections["score_distribution"][idx_det].tolist()
+            results_with_score_distribution.append(result_with_score_distribution)
+    return results, results_with_score_distribution
