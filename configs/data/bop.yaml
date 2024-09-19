@@ -98,3 +98,7 @@ datasets:
     cad: None
     test: None
     obj_names: [obj_000001, obj_000002, obj_000003, obj_000004, obj_000005, obj_000006, obj_000007, obj_000008, obj_000009, obj_000010, obj_000011, obj_000012, obj_000013, obj_000014, obj_000015, obj_000016, obj_000017, obj_000018, obj_000019, obj_000020, obj_000021, obj_000022, obj_000023, obj_000024, obj_000025, obj_000026, obj_000027, obj_000028, obj_000029, obj_000030, obj_000031, obj_000032, obj_000033]
+  handal:
+    cad: handal_models.zip
+    test: handal_test_bop24.zip
+    obj_names: [ obj_000001, obj_000002, obj_000003, obj_000004, obj_000005, obj_000006, obj_000007, obj_000008, obj_000009, obj_000010, obj_000011, obj_000012, obj_000013, obj_000014, obj_000015, obj_000016, obj_000017, obj_000018, obj_000019, obj_000020, obj_000021, obj_000022, obj_000023, obj_000024, obj_000025, obj_000026, obj_000027, obj_000028, obj_000029, obj_000030, obj_000031, obj_000032, obj_000033, obj_000034, obj_000035, obj_000036, obj_000037, obj_000038, obj_000039, obj_000040 ]
