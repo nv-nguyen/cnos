@@ -29,7 +29,7 @@ def visualize(cfg: DictConfig) -> None:
 
     num_max_objs = 50
     colors = distinctipy.get_colors(num_max_objs)
-
+    
     logging.info("Loading detections...")
     with open(cfg.input_file, "r") as f:
         dets = json.load(f)
@@ -38,6 +38,9 @@ def visualize(cfg: DictConfig) -> None:
     logging.info(
         f"Keeping only {len(dets)} detections having score > {cfg.conf_threshold}"
     )
+    # Ignoring some object IDs.
+    ignored_obj_ids = []
+    dets = [det for det in dets if det["category_id"] not in ignored_obj_ids]
 
     # sort by (scene_id, frame_id)
     dets = sorted(dets, key=lambda x: (x["scene_id"], x["image_id"]))
